@@ -20,13 +20,13 @@ func runWorkers(n int) {
 		go worker(&wg)
 	}
 
-	wg.Wait() // Wait for all workers (in this case, indefinitely)
+	wg.Wait()
 }
 
 func worker(wg *sync.WaitGroup) {
 	defer wg.Done()
 	for {
-		fibonacci(35) // Adjust 35 to control workload intensity
+		fibonacci(35)
 	}
 }
 
