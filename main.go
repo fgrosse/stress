@@ -21,7 +21,11 @@ const (
 	maxWidth = 80
 )
 
-var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render
+var (
+	textStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("#5A56E0")).Render
+	helpStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render
+	progressGradient = [2]string{"#5A56E0", "#EE6FF8"}
+)
 
 func main() {
 	n := flag.Int("workers", runtime.NumCPU(), "Number of workers to run")
@@ -52,7 +56,8 @@ func NewModel(ctx context.Context, numWorkers int) Model {
 
 	m := Model{
 		progress: progress.New(
-			progress.WithDefaultGradient(),
+			progress.WithGradient(progressGradient[0], progressGradient[1]),
+			progress.WithoutPercentage(),
 		),
 		numWorkers:  numWorkers,
 		stopWorkers: cancel,
@@ -144,7 +149,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	pad := strings.Repeat(" ", padding)
-	return "\n Stressing CPUs" +
+	return "\n" +
+		textStyle("Stressing CPUs") +
 		pad + m.progress.View() + "\n\n" +
 		pad + helpStyle(fmt.Sprintf("Using %d workers. Press q or ctrl+c to quit", m.numWorkers))
 }
